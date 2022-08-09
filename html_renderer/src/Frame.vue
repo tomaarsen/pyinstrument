@@ -91,10 +91,31 @@ export default {
       return `${this.frame.filePathShort}:${this.frame.lineNo.toString().padEnd(4, ' ')}`
     },
     formattedTime() {
-      return this.frame.time.toLocaleString(undefined, {
-        minimumFractionDigits: 3,
-        maximumFractionDigits: 3,
-      })
+      if (appState.timeFormat === "absolute") {
+        if (appState.timeRelativeTo === "total") {
+          return this.frame.time.toLocaleString(undefined, {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3,
+          });
+        }
+
+        return this.frame.perFrameTime.toLocaleString(undefined, {
+          minimumFractionDigits: 3,
+          maximumFractionDigits: 3,
+        });
+      }
+
+      if (appState.timeRelativeTo === "total") {
+        return `${(this.frame.proportionOfTotal * 100).toLocaleString(undefined, {
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1,
+        })}%`;
+      }
+
+      return `${(this.frame.perFrameProportionOfTotal * 100).toLocaleString(undefined, {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      })}%`;
     },
     groupLibrarySummary() {
       if (!this.frame.group) {
@@ -111,18 +132,37 @@ export default {
       let color = undefined;
       let fontWeight = undefined;
 
-      if (this.frame.proportionOfTotal > 0.6) {
-        color = '#FF4159';
-        fontWeight = 600;
-      } else if (this.frame.proportionOfTotal > 0.3) {
-        color = '#F5A623'
-        fontWeight = 600;
-      } else if (this.frame.proportionOfTotal > 0.2) {
-        color = '#D8CB2A'
-        fontWeight = 600;
-      } else if (this.frame.proportionOfTotal > 0.0) {
-        color = '#7ED321'
-        fontWeight = 500;
+      if (appState.timeRelativeTo === "total") {
+        let proportion = this.frame.proportionOfTotal;
+        if (proportion > 0.6) {
+          color = '#FF4159';
+          fontWeight = 600;
+        } else if (proportion > 0.3) {
+          color = '#F5A623'
+          fontWeight = 600;
+        } else if (proportion > 0.2) {
+          color = '#D8CB2A'
+          fontWeight = 600;
+        } else if (proportion > 0.0) {
+          color = '#7ED321'
+          fontWeight = 500;
+        }
+      }
+      else {
+        let proportion = this.frame.perFrameProportionOfTotal;
+        if (proportion > 0.3) {
+          color = '#FF4159';
+          fontWeight = 600;
+        } else if (proportion > 0.15) {
+          color = '#F5A623'
+          fontWeight = 600;
+        } else if (proportion > 0.1) {
+          color = '#D8CB2A'
+          fontWeight = 600;
+        } else if (proportion > 0.0) {
+          color = '#7ED321'
+          fontWeight = 500;
+        }
       }
 
       return {color, fontWeight}

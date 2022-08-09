@@ -4,12 +4,35 @@
       <div class="row">
         <div class="title">pyinstrument</div>
         <div class="metrics">
+          <input type="radio" @change="$emit('change', 'absolute', 'total')"
+            id="absolute"
+            name="time-format" checked>
+          <label class="metric-label" for="absolute">Absolute time</label>
+
           <div class="metric-label">Recorded:</div>
           <div class="metric-value">{{startTime}}</div>
+
+          <input type="radio" @change="$emit('change', 'proportion', 'total')"
+            id="proportion"
+            name="time-format">
+          <label class="metric-label" for="proportion">Proportional to total</label>
+
           <div class="metric-label">Duration:</div>
           <div class="metric-value">{{duration}} seconds</div>
+
+          <input type="radio" @change="$emit('change', 'absolute', 'per_frame')"
+            id="absolute"
+            name="time-format">
+          <label class="metric-label" for="absolute">Absolute per frame</label>
+
           <div class="metric-label">Samples:</div>
           <div class="metric-value">{{session.sample_count}}</div>
+
+          <input type="radio" @change="$emit('change', 'proportion', 'per_frame')"
+            id="proportion"
+            name="time-format">
+          <label class="metric-label" for="proportion">Proportional to total per frame</label>
+
           <div class="metric-label">CPU time:</div>
           <div class="metric-value">{{cpuTime}} seconds</div>
         </div>
